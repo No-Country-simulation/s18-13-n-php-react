@@ -11,11 +11,77 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-
+/**
+* @OA\Info(
+*             title="Api Login", 
+*             version="1.0",
+*             description="Apis para login, creacion y logout de usuarios"
+* )
+*
+* @OA\Server(url="http://localhost:8000")
+*/
 
 class LoginController extends Controller
-{
-    // Metodo login
+{   
+/**
+ * Metodo Login
+ * @OA\POST (
+ *     path="/login_user",
+ *     tags={"Login"},
+ *     summary="Autenticación de usuario",
+ *     description="Este método permite realizar la autenticación de un usuario en la aplicación",
+ *     @OA\Parameter(
+ *         name="username",
+ *         in="query",
+ *         required=true,
+ *         @OA\Schema(type="string"),
+ *         description="Nombre de usuario para el login",
+ *         example="usuario123"
+ *     ),
+ *     @OA\Parameter(
+ *         name="password",
+ *         in="query",
+ *         required=true,
+ *         @OA\Schema(type="string"),
+ *         description="Contraseña del usuario para el login",
+ *         example="password123"
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Login de usuario exitoso",
+ *         @OA\JsonContent(
+ *             @OA\Property(
+ *                 type="array",
+ *                 property="rows",
+ *                 @OA\Items(
+ *                     type="object",
+ *                     @OA\Property(
+ *                         property="username",
+ *                         type="string",
+ *                         example="usuario123"
+ *                     ),
+ *                     @OA\Property(
+ *                         property="password",
+ *                         type="string",
+ *                         example="password123"
+ *                     )
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Datos faltantes",
+ *         @OA\JsonContent(
+ *             @OA\Property(
+ *                 property="message",
+ *                 type="string",
+ *                 example="No existen coincidencias por este usuario [App\\Models\\User]"
+ *             )
+ *         )
+ *     )
+ * )
+ */
     public function login_sesion(Request $request){
         $credentials = $request->only('username', 'password');
         $validator = Validator::make($credentials, [
@@ -26,7 +92,7 @@ class LoginController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'errors' => $validator->errors()
-            ], 422);
+            ], 400);
         }
 
         if (Auth::attempt($credentials)) {
@@ -91,7 +157,137 @@ class LoginController extends Controller
         ], 200);
     }
 
-    // Metodo create_user para crear usuario
+/**
+ * Método create_user para crear usuario
+ * @OA\Post(
+ *     path="/crear_usuario",
+ *     tags={"Usuarios"},
+ *     summary="Creación de un nuevo usuario",
+ *     description="Permite crear un nuevo usuario en la aplicación.",
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"email", "username", "name", "lastname", "password", "type_user", "phone_number"},
+ *             @OA\Property(
+ *                 property="email",
+ *                 type="string",
+ *                 format="email",
+ *                 description="Email del usuario",
+ *                 example="usuario@gmail.com"
+ *             ),
+ *             @OA\Property(
+ *                 property="username",
+ *                 type="string",
+ *                 description="Nombre de usuario",
+ *                 example="usuario123"
+ *             ),
+ *             @OA\Property(
+ *                 property="name",
+ *                 type="string",
+ *                 description="Nombre del usuario",
+ *                 example="Usuario"
+ *             ),
+ *             @OA\Property(
+ *                 property="lastname",
+ *                 type="string",
+ *                 description="Apellido del usuario",
+ *                 example="Ejemplo"
+ *             ),
+ *             @OA\Property(
+ *                 property="password",
+ *                 type="string",
+ *                 format="password",
+ *                 description="Contraseña del usuario",
+ *                 example="password123"
+ *             ),
+ *             @OA\Property(
+ *                 property="type_user",
+ *                 type="integer",
+ *                 description="Tipo de usuario (1 para administrador, 2 para usuario regular)",
+ *                 example=1
+ *             ),
+ *             @OA\Property(
+ *                 property="phone_number",
+ *                 type="string",
+ *                 description="Número de teléfono del usuario",
+ *                 example="+541123455687"
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Usuario creado exitosamente",
+ *         @OA\JsonContent(
+ *             @OA\Property(
+ *                 property="message",
+ *                 type="string",
+ *                 example="Usuario creado exitosamente"
+ *             ),
+ *             @OA\Property(
+ *                 property="user",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="id",
+ *                     type="integer",
+ *                     example=10
+ *                 ),
+ *                 @OA\Property(
+ *                     property="email",
+ *                     type="string",
+ *                     example="usuario@gmail.com"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="username",
+ *                     type="string",
+ *                     example="usuario123"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="name",
+ *                     type="string",
+ *                     example="Usuario"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="lastname",
+ *                     type="string",
+ *                     example="Ejemplo"
+ *                 ),
+ *                 @OA\Property(
+ *                     property="type_user",
+ *                     type="integer",
+ *                     example=1
+ *                 ),
+ *                 @OA\Property(
+ *                     property="phone_number",
+ *                     type="string",
+ *                     example="+541123455687"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Datos faltantes o incorrectos",
+ *         @OA\JsonContent(
+ *             @OA\Property(
+ *                 property="message",
+ *                 type="string",
+ *                 example="Error en la solicitud. Faltan datos obligatorios."
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Error interno del servidor",
+ *         @OA\JsonContent(
+ *             @OA\Property(
+ *                 property="message",
+ *                 type="string",
+ *                 example="Error al crear el usuario. Por favor intente nuevamente más tarde."
+ *             )
+ *         )
+ *     )
+ * )
+ */
     public function create_user(Request $request) {
         
         $credentials = $request->only('email', 'username', 'name', 'lastname', 'password', 'type_user', 'phone_number');
@@ -119,7 +315,7 @@ class LoginController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'errors' => $validator->errors()
-            ], 422);
+            ], 400);
         }
         
         $user = User::create([
@@ -135,7 +331,7 @@ class LoginController extends Controller
         ]);
         
         $dataUser = User::find($user->id);
-        return response()->json(['message' => 'Usuario creado', 'user' => $dataUser], 201);
+        return response()->json(['message' => 'Usuario creado', 'user' => $dataUser], 200);
     }
 
 }

@@ -1,0 +1,254 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Api Login",
+        "description": "Apis para login, creacion y logout de usuarios",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000"
+        }
+    ],
+    "paths": {
+        "/login_user": {
+            "post": {
+                "tags": [
+                    "Login"
+                ],
+                "summary": "Autenticación de usuario",
+                "description": "Este método permite realizar la autenticación de un usuario en la aplicación",
+                "operationId": "a355b0fcf0455535d37ecb0b96aa8151",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "query",
+                        "description": "Nombre de usuario para el login",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "usuario123"
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "Contraseña del usuario para el login",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "password123"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Login de usuario exitoso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "rows": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "username": {
+                                                        "type": "string",
+                                                        "example": "usuario123"
+                                                    },
+                                                    "password": {
+                                                        "type": "string",
+                                                        "example": "password123"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Datos faltantes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No existen coincidencias por este usuario [App\\\\Models\\\\User]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/crear_usuario": {
+            "post": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Creación de un nuevo usuario",
+                "description": "Permite crear un nuevo usuario en la aplicación.",
+                "operationId": "d94150bb5592ec8582b77549a4a3a0ee",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "username",
+                                    "name",
+                                    "lastname",
+                                    "password",
+                                    "type_user",
+                                    "phone_number"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "description": "Email del usuario",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "usuario@gmail.com"
+                                    },
+                                    "username": {
+                                        "description": "Nombre de usuario",
+                                        "type": "string",
+                                        "example": "usuario123"
+                                    },
+                                    "name": {
+                                        "description": "Nombre del usuario",
+                                        "type": "string",
+                                        "example": "Usuario"
+                                    },
+                                    "lastname": {
+                                        "description": "Apellido del usuario",
+                                        "type": "string",
+                                        "example": "Ejemplo"
+                                    },
+                                    "password": {
+                                        "description": "Contraseña del usuario",
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    },
+                                    "type_user": {
+                                        "description": "Tipo de usuario (1 para administrador, 2 para usuario regular)",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "phone_number": {
+                                        "description": "Número de teléfono del usuario",
+                                        "type": "string",
+                                        "example": "+541123455687"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuario creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario creado exitosamente"
+                                        },
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "usuario@gmail.com"
+                                                },
+                                                "username": {
+                                                    "type": "string",
+                                                    "example": "usuario123"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Usuario"
+                                                },
+                                                "lastname": {
+                                                    "type": "string",
+                                                    "example": "Ejemplo"
+                                                },
+                                                "type_user": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "phone_number": {
+                                                    "type": "string",
+                                                    "example": "+541123455687"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Datos faltantes o incorrectos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error en la solicitud. Faltan datos obligatorios."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error al crear el usuario. Por favor intente nuevamente más tarde."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Login",
+            "description": "Login"
+        },
+        {
+            "name": "Usuarios",
+            "description": "Usuarios"
+        }
+    ]
+}
